@@ -1,6 +1,7 @@
 'use client'
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client'
 import Link from 'next/link'
+import { tones } from '@/data/tones'
 import { useState } from 'react'
 
 export default withPageAuthRequired(function Page() {
@@ -64,8 +65,49 @@ export default withPageAuthRequired(function Page() {
             />
           </div>
 
-          <div className="w-full flex flex-col gap-2"> </div>
-          <div className="w-full flex flex-col gap-2"> </div>
+          <div className="w-full flex flex-col gap-2">
+            <label
+              htmlFor="keywords"
+              className="text-gray-600 text-sm font-semibold"
+            >
+              Keywords
+            </label>
+            <input
+              className="w-full border-gray-200 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              id="keywords"
+              type="text"
+              name="keywords"
+              placeholder="Enter keywords (e.g. 'How to make a blog post')"
+              value={postPrompt.keywords}
+              onChange={(e) =>
+                setPostPrompt({ ...postPrompt, keywords: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="w-full flex flex-col gap-2">
+            <label
+              htmlFor="tone"
+              className="text-gray-600 text-sm font-semibold"
+            >
+              Tone
+            </label>
+            <select
+              name="tone"
+              id="tone"
+              value={postPrompt.tone}
+              onChange={(e) =>
+                setPostPrompt({ ...postPrompt, tone: e.target.value })
+              }
+              className="w-full border border-gray-200 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            >
+              {tones.map((tone, index) => (
+                  <option key={index} value={tone.value}>
+                  {tone.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             type="submit"
             className="bg-indigo-600 w-fit text-white px-4 py-2 rounded-md mt-4 hover:bg-indigo-500 transition-all cursor-pointer"
