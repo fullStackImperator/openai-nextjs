@@ -3,18 +3,47 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0/client'
 import Link from 'next/link'
 import { tones } from '@/data/tones'
 import { useState } from 'react'
+import { generatePost } from '@/lib/functions'
+import { useRecoilState } from 'recoil'
+import { FaSpinner, FaRegTired } from 'react-icons/fa'
 
 export default withPageAuthRequired(function Page() {
+  const [post, setPost] = useState<Post | null>(null)
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState(false)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [error, setError] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [postPrompt, setPostPrompt] = useState<PostPrompt>({
     title: '',
     description: '',
     keywords: '',
     tone: '',
   })
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    console.log(postPrompt)
+    // reset all the flags
+    setHasSubmitted(false)
+    setError(false)
+    setSuccess(false)
+    setIsWaitingForResponse(true)
+    console.log('postPrompt:', postPrompt)
+    const res = await generatePost(postPrompt)
+    await res
+      .json()
+      .then((data) => {
+        setIsWaitingForResponse(false)
+        setHasSubmitted(false)
+        setSuccess(true)
+        console.log(data)
+        setPost(data.post)
+      })
+      .catch((err) => {
+        setIsWaitingForResponse(false)
+        setHasSubmitted(false)
+        setError(true)
+      })
   }
+
   return (
     <section className="w-full flex flex-col items-center">
       <section className="w-[95%] max-w-4xl">
@@ -102,7 +131,7 @@ export default withPageAuthRequired(function Page() {
               className="w-full border border-gray-200 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600"
             >
               {tones.map((tone, index) => (
-                  <option key={index} value={tone.value}>
+                <option key={index} value={tone.value}>
                   {tone.label}
                 </option>
               ))}
@@ -115,6 +144,27 @@ export default withPageAuthRequired(function Page() {
             Submit
           </button>
         </form>
+        {isWaitingForResponse && hasSubmitted && (
+          <div className="w-full flex flex-col gap-4 mt-4 items-center">
+            <FaSpinner className="animate-spin w-8 h-8 text-indigo-600" />
+          </div>
+        )}
+        {error && (
+          <div className="w-full flex flex-col gap-4 mt-4 items-center">
+            <FaRegTired className="w-8 h-8 text-rose-600" />
+            <p className="text-rose-600 text-center">
+              Something went wrong. Please try again.
+            </p>
+          </div>
+        )}
+        {success && post && (
+          <div className="w-full flex flex-col gap-4 mt-4">
+            <h1 className="text-4xl font-bold text-gray-800 text-center">
+              {post.title}
+            </h1>
+            
+          </div>
+        )}
       </section>
     </section>
   )

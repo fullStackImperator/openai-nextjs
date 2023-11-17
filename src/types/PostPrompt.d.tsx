@@ -1,6 +1,6 @@
 interface PostPrompt {
-  title: 'string'
-  description: 'string'
-  keywords: 'string'
-  tone: 'string'
+  title: string
+  description: string
+  keywords: string
+  tone: string
 }
