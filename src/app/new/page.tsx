@@ -162,7 +162,17 @@ export default withPageAuthRequired(function Page() {
             <h1 className="text-4xl font-bold text-gray-800 text-center">
               {post.title}
             </h1>
-            
+            {typeof post.content === "string" ? (
+              <p className='text-gray-600'>{post.content}</p>
+            ) : (
+              <div className='flex flex-col gap-2'>
+                {post.content.map((paragraph, index) => (
+                  <p key={index} className='text-gray-600'>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </section>
