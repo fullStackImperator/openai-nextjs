@@ -26,7 +26,7 @@ export default withPageAuthRequired(function Page() {
     setError(false)
     setSuccess(false)
     setIsWaitingForResponse(true)
-    console.log('postPrompt:', postPrompt)
+    // console.log('postPrompt:', postPrompt)
     const res = await generatePost(postPrompt)
     await res
       .json()
@@ -34,7 +34,7 @@ export default withPageAuthRequired(function Page() {
         setIsWaitingForResponse(false)
         setHasSubmitted(false)
         setSuccess(true)
-        console.log(data)
+        // console.log(data)
         setPost(data.post)
       })
       .catch((err) => {

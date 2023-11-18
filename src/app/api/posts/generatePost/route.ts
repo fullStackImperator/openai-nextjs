@@ -7,7 +7,7 @@ const withApiAuthRequiredExtended = withApiAuthRequired as any
 
 export const POST = withApiAuthRequiredExtended(
   async (request: NextRequest, response: NextResponse) => {
-    // const { db } = await connectToDatabase()
+    const { db } = await connectToDatabase()
     try {
       const session = await getSession(request, response)
       const user = session?.user
@@ -82,7 +82,7 @@ export const POST = withApiAuthRequiredExtended(
         uid: user.sub,
       }
 
-    //   await db.collection('posts').insertOne(post)
+      await db.collection('posts').insertOne(post)
 
     //   await db.collection('profiles').updateOne(
     //     {
